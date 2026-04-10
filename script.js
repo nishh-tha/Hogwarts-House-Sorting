@@ -1,7 +1,7 @@
 // ================= CONFIG =================
 const API_BASE = window.location.hostname === 'localhost'
     ? 'http://localhost:3000/api'
-    : 'https://your-backend-url.onrender.com/api';
+    : 'https://hogwarts-house-sorting-backend.onrender.com/';
 
 
 // ================= QUIZ DATA =================
