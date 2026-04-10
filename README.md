@@ -6,7 +6,7 @@ A full-stack web application that assigns users to Hogwarts houses based on pers
 
 ## 🚀 Live Demo
 
-*(Add your deployed links here after deployment)*
+
 Frontend: https://your-frontend.vercel.app
 Backend API: https://your-backend.onrender.com
 
