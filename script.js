@@ -1,8 +1,7 @@
 // ================= CONFIG =================
 const API_BASE = window.location.hostname === 'localhost'
-    ? 'https://harrypotter-house-sorting.netlify.app/'
-    : 'https://hogwarts-house-sorting-backend.onrender.com/';
-
+    ? 'http://localhost:3000/api'
+    : 'https://hogwarts-house-sorting-backend.onrender.com/api';
 
 // ================= QUIZ DATA =================
 const questions = [
