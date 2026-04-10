@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hogwarts Sorting</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+    <div class="logo">✦ &nbsp;Hogwarts Sorting</div>
+    <nav class="menu">
+        <a href="#home">Home</a>
+        <a href="#quiz">Quiz</a>
+        <a href="#houses">Houses</a>
+        <a href="#about">About</a>
+    </nav>
+</header>
+
+
+<!-- ================= HOME ================= -->
+<section id="home" class="hero">
+    <p class="hero-eyebrow">✦ &nbsp; A Magical Experience &nbsp; ✦</p>
+    <h1>Welcome to<br>Hogwarts</h1>
+    <p>The Sorting Hat awaits your destiny...</p>
+    <a href="#quiz" class="btn">Begin the Ceremony</a>
+</section>
+
+<div class="section-divider">
+    <div class="section-divider-line"></div>
+    <span class="section-divider-star">✦</span>
+    <div class="section-divider-line"></div>
+</div>
+
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz" class="section">
+    <h2>The Sorting Ceremony</h2>
+    <p class="section-subtitle">Answer truthfully — the Hat sees all</p>
+
+    <div class="container">
+        <div id="quiz-card" class="quiz-card">
+
+            <!-- START SCREEN -->
+            <div id="start-container" class="start-container">
+                <h2>Ready to be sorted?</h2>
+                <p>Place the Hat upon your head and let it speak...</p>
+                <button id="start-btn" class="btn">Begin the Ceremony</button>
+            </div>
+
+            <!-- QUESTIONS -->
+            <div id="question-container" class="question-container hidden">
+                <img id="question-img" class="question-img" src="" alt="">
+                <h2 id="question-text"></h2>
+                <div id="options" class="options"></div>
+            </div>
+
+            <!-- RESULT -->
+            <div id="result-container" class="result-container hidden">
+                <div class="result-eyebrow">The Sorting Hat has spoken</div>
+                <h2>Your House is...</h2>
+                <div class="house-result">
+                    <img id="house-img" class="house-img" src="" alt="House Crest">
+                    <div id="house-reveal" class="house-reveal"></div>
+                    <p id="house-description" class="house-description"></p>
+                </div>
+                <button id="retake-btn" class="btn retake-btn">Try Again</button>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<div class="section-divider">
+    <div class="section-divider-line"></div>
+    <span class="section-divider-star">✦</span>
+    <div class="section-divider-line"></div>
+</div>
+
+
+<!-- ================= HOUSES ================= -->
+<section id="houses" class="section">
+    <h2>The Four Houses</h2>
+    <p class="section-subtitle">Where do you belong?</p>
+
+    <div class="houses-grid">
+
+        <div class="house gryffindor">
+            <img src="images/gryffindor.jpg" class="house-icon" alt="Gryffindor">
+            <h3>Gryffindor</h3>
+            <p>Bravery · Courage · Determination</p>
+        </div>
+
+        <div class="house slytherin">
+            <img src="images/slytherin.jpg" class="house-icon" alt="Slytherin">
+            <h3>Slytherin</h3>
+            <p>Ambition · Cunning · Leadership</p>
+        </div>
+
+        <div class="house ravenclaw">
+            <img src="images/ravenclaw.jpg" class="house-icon" alt="Ravenclaw">
+            <h3>Ravenclaw</h3>
+            <p>Wisdom · Intelligence · Creativity</p>
+        </div>
+
+        <div class="house hufflepuff">
+            <img src="images/hufflepuff.jpg" class="house-icon" alt="Hufflepuff">
+            <h3>Hufflepuff</h3>
+            <p>Loyalty · Kindness · Hard Work</p>
+        </div>
+
+    </div>
+</section>
+
+<div class="section-divider">
+    <div class="section-divider-line"></div>
+    <span class="section-divider-star">✦</span>
+    <div class="section-divider-line"></div>
+</div>
+
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="section">
+    <h2>About This Experience</h2>
+    <p class="section-subtitle">The legend behind the ceremony</p>
+    <p>
+        Every witch or wizard has a place at Hogwarts — but only the Sorting Hat can truly reveal where you belong.<br><br>
+        This experience recreates the legendary sorting ceremony in a modern, interactive form. Through a series of magical scenarios, your choices shape a path that reflects your deepest traits, values, and instincts.<br><br>
+        Bravery. Ambition. Wisdom. Loyalty.<br><br>
+        Choose wisely — for the Hat sees not only who you are, but who you have the potential to become.
+    </p>
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+    <p>© 2026 Hogwarts Sorting Quiz &nbsp;·&nbsp; Made with magic ✨</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
