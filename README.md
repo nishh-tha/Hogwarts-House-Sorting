@@ -7,8 +7,8 @@ A full-stack web application that assigns users to Hogwarts houses based on pers
 ## 🚀 Live Demo
 
 
-Frontend: https://your-frontend.vercel.app
-Backend API: https://your-backend.onrender.com
+Frontend: https://harrypotter-house-sorting.netlify.app/
+Backend API: [https://your-backend.onrender.com](https://hogwarts-house-sorting-backend.onrender.com/api)
 
 ---
 
