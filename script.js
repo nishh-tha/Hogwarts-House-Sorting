@@ -125,6 +125,32 @@ let scores = { gryffindor: 0, slytherin: 0, ravenclaw: 0, hufflepuff: 0 };
 let studentName = '';
 let particleAnimId = null;
 
+const downloadBtn = document.getElementById('download-btn');
+
+if (downloadBtn) {
+    downloadBtn.addEventListener('click', async () => {
+
+        const shareCard = document.getElementById('share-card');
+
+        // Fill data
+        document.getElementById('share-name').textContent = studentName || "Young Wizard";
+        document.getElementById('share-house').textContent = houseReveal.textContent;
+        document.getElementById('share-img').src = houseImg.src;
+
+        // Show temporarily
+        shareCard.classList.remove('hidden');
+
+        const canvas = await html2canvas(shareCard);
+
+        const link = document.createElement('a');
+        link.download = 'hogwarts-result.png';
+        link.href = canvas.toDataURL();
+        link.click();
+
+        // Hide again
+        shareCard.classList.add('hidden');
+    });
+}
 // ================= STARFIELD =================
 function initStarfield() {
     const canvas = document.createElement('canvas');

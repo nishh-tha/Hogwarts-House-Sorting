@@ -756,3 +756,35 @@ body.hufflepuff-bg #house-reveal { color: #e8c050; text-shadow: 0 0 40px rgba(21
     .houses-grid { grid-template-columns: 1fr; }
     .name-modal-card { padding: 32px 20px; }
 }
+.result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+.share-card {
+    width: 360px;
+    height: 640px;
+    background: #0a0812;
+    color: #f0e6c8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+.share-card img {
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+}
+
+.hidden {
+    position: absolute;
+    left: -9999px;
+}

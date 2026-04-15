@@ -81,7 +81,10 @@
                     <div id="house-reveal" class="house-reveal"></div>
                     <p id="house-description" class="house-description"></p>
                 </div>
-                <button id="retake-btn" class="btn retake-btn">Try Again</button>
+                <div class="result-actions">
+                    <button id="retake-btn" class="btn retake-btn">Try Again</button>
+                    <button id="download-btn" class="btn">Download Result</button>
+                </div>
             </div>
 
         </div>
@@ -184,8 +187,21 @@
         </button>
     </div>
 </div>
+<!-- NAME MODAL -->
+<div id="name-modal" class="name-modal hidden">
+    ...
+</div>
 
+<!-- ✅ ADD YOUR SHARE CARD HERE -->
+<div id="share-card" class="share-card hidden">
+    <h2 id="share-name"></h2>
+    <img id="share-img" />
+    <h1 id="share-house"></h1>
+    <p>✨ Sorted by the Hogwarts Hat ✨</p>
+</div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>
+
