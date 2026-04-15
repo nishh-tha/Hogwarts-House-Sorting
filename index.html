@@ -46,6 +46,7 @@
 
             <!-- START SCREEN -->
             <div id="start-container" class="start-container">
+                <div class="hat-icon">🎩</div>
                 <h2>Ready to be sorted?</h2>
                 <p>Place the Hat upon your head and let it speak...</p>
                 <button id="start-btn" class="btn">Begin the Ceremony</button>
@@ -58,12 +59,25 @@
                 <div id="options" class="options"></div>
             </div>
 
+            <!-- THINKING STATE -->
+            <div id="thinking-container" class="thinking-container hidden">
+                <div class="hat-thinking">🎩</div>
+                <p class="thinking-text">The Hat is deliberating...</p>
+                <div class="thinking-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+
             <!-- RESULT -->
             <div id="result-container" class="result-container hidden">
                 <div class="result-eyebrow">The Sorting Hat has spoken</div>
-                <h2>Your House is...</h2>
+                <h2 id="result-student-name" class="result-student-name"></h2>
+                <p class="result-subtitle">you belong in...</p>
                 <div class="house-result">
-                    <img id="house-img" class="house-img" src="" alt="House Crest">
+                    <div class="crest-wrapper">
+                        <img id="house-img" class="house-img" src="" alt="House Crest">
+                        <div class="crest-glow"></div>
+                    </div>
                     <div id="house-reveal" class="house-reveal"></div>
                     <p id="house-description" class="house-description"></p>
                 </div>
@@ -73,6 +87,12 @@
         </div>
     </div>
 </section>
+
+<!-- PARTICLE CANVAS for result celebration -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- HOUSE COLOR FLOOD OVERLAY -->
+<div id="house-flood" class="house-flood"></div>
 
 <div class="section-divider">
     <div class="section-divider-line"></div>
@@ -139,6 +159,31 @@
 <footer class="site-footer">
     <p>© 2026 Hogwarts Sorting Quiz &nbsp;·&nbsp; Made with magic ✨</p>
 </footer>
+
+<!-- NAME MODAL -->
+<div id="name-modal" class="name-modal hidden">
+    <div class="name-modal-backdrop"></div>
+    <div class="name-modal-card">
+        <div class="modal-hat">🎩</div>
+        <p class="modal-eyebrow">✦ &nbsp; The Hat Speaks &nbsp; ✦</p>
+        <h2 class="modal-title">State your name,<br>young wizard</h2>
+        <p class="modal-subtitle">The Sorting Hat must know who stands before it</p>
+        <div class="modal-input-wrap">
+            <input
+                id="name-input"
+                type="text"
+                placeholder="e.g. Harry Potter"
+                maxlength="40"
+                autocomplete="off"
+                spellcheck="false"
+            />
+            <div class="input-line"></div>
+        </div>
+        <button id="name-confirm-btn" class="btn modal-btn">
+            Place the Hat
+        </button>
+    </div>
+</div>
 
 <script src="script.js"></script>
 

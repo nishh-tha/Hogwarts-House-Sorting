@@ -1,7 +1,5 @@
 // ================= CONFIG =================
-const API_BASE = window.location.hostname === 'localhost'
-    ? 'http://localhost:3000/api'
-    : 'https://hogwarts-house-sorting-backend.onrender.com/api';
+const API_BASE = 'http://localhost:3000/api';
 
 // ================= QUIZ DATA =================
 const questions = [
@@ -93,27 +91,39 @@ const houseImages = {
     hufflepuff: "images/hufflepuff.jpg"
 };
 
+// House color palettes for particles + flood
+const houseColors = {
+    gryffindor: { primary: '#c0392b', secondary: '#e74c3c', dark: '#7b0000' },
+    slytherin:  { primary: '#1a7a1a', secondary: '#27ae60', dark: '#004400' },
+    ravenclaw:  { primary: '#1a3a9a', secondary: '#2980b9', dark: '#000c4a' },
+    hufflepuff: { primary: '#c9940e', secondary: '#f1c40f', dark: '#6b4e00' }
+};
 
 // ================= DOM ELEMENTS =================
-const startContainer    = document.getElementById("start-container");
-const startBtn          = document.getElementById("start-btn");
-const questionContainer = document.getElementById("question-container");
-const questionText      = document.getElementById("question-text");
-const questionImg       = document.getElementById("question-img");
-const optionsDiv        = document.getElementById("options");
-const resultContainer   = document.getElementById("result-container");
-const houseReveal       = document.getElementById("house-reveal");
-const houseImg          = document.getElementById("house-img");
-const retakeBtn         = document.getElementById("retake-btn");
-const heroStartBtn      = document.getElementById("hero-start-btn");
+const startContainer    = document.getElementById('start-container');
+const startBtn          = document.getElementById('start-btn');
+const questionContainer = document.getElementById('question-container');
+const thinkingContainer = document.getElementById('thinking-container');
+const questionText      = document.getElementById('question-text');
+const questionImg       = document.getElementById('question-img');
+const optionsDiv        = document.getElementById('options');
+const resultContainer   = document.getElementById('result-container');
+const houseReveal       = document.getElementById('house-reveal');
+const houseImg          = document.getElementById('house-img');
+const retakeBtn         = document.getElementById('retake-btn');
+const heroStartBtn      = document.getElementById('hero-start-btn');
+const nameModal         = document.getElementById('name-modal');
+const nameInput         = document.getElementById('name-input');
+const nameConfirmBtn    = document.getElementById('name-confirm-btn');
+const particleCanvas    = document.getElementById('particleCanvas');
+const houseFlood        = document.getElementById('house-flood');
 const body              = document.body;
-
 
 // ================= STATE =================
 let currentQuestionIndex = 0;
 let scores = { gryffindor: 0, slytherin: 0, ravenclaw: 0, hufflepuff: 0 };
 let studentName = '';
-
+let particleAnimId = null;
 
 // ================= STARFIELD =================
 function initStarfield() {
@@ -122,16 +132,16 @@ function initStarfield() {
     document.body.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
-    const stars = Array.from({ length: 160 }, () => ({
+    const stars = Array.from({ length: 180 }, () => ({
         x: Math.random(),
         y: Math.random(),
-        r: Math.random() * 1.2 + 0.2,
+        r: Math.random() * 1.3 + 0.2,
         a: Math.random() * Math.PI * 2,
-        speed: Math.random() * 0.006 + 0.002
+        speed: Math.random() * 0.005 + 0.002
     }));
 
     function draw() {
-        canvas.width = window.innerWidth;
+        canvas.width  = window.innerWidth;
         canvas.height = document.body.scrollHeight;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         stars.forEach(s => {
@@ -147,7 +157,6 @@ function initStarfield() {
     draw();
 }
 
-
 // ================= PROGRESS PIPS =================
 function renderPips() {
     const existing = document.getElementById('quiz-progress-pips');
@@ -159,87 +168,50 @@ function renderPips() {
 
     questions.forEach((_, i) => {
         const pip = document.createElement('div');
-        pip.className = 'quiz-pip' + (i < currentQuestionIndex ? ' done' : i === currentQuestionIndex ? ' active' : '');
+        pip.className = 'quiz-pip' +
+            (i < currentQuestionIndex ? ' done' : i === currentQuestionIndex ? ' active' : '');
         pips.appendChild(pip);
     });
 
     questionContainer.insertBefore(pips, questionContainer.firstChild);
 }
 
-
-// ================= NAME PROMPT =================
-// Ask for the student's name before the quiz begins
-function askForName(onConfirm) {
-    // Remove existing name prompt if any
-    const existing = document.getElementById('name-prompt');
-    if (existing) existing.remove();
-
-    const prompt = document.createElement('div');
-    prompt.id = 'name-prompt';
-    prompt.style.cssText = `
-        position:fixed; inset:0; background:rgba(0,0,0,0.75);
-        display:flex; align-items:center; justify-content:center;
-        z-index:1000; backdrop-filter:blur(4px);
-    `;
-    prompt.innerHTML = `
-        <div style="
-            background:#1a1230; border:1px solid rgba(218,205,170,0.3);
-            border-radius:16px; padding:40px; max-width:380px; width:90%;
-            text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.5);
-        ">
-            <p style="color:#daccaa; font-size:13px; letter-spacing:2px; margin-bottom:8px;">✦ THE SORTING CEREMONY ✦</p>
-            <h2 style="color:#f0e8d0; font-size:22px; margin-bottom:8px;">State your name</h2>
-            <p style="color:rgba(218,205,170,0.6); font-size:14px; margin-bottom:24px;">
-                The Sorting Hat must know who stands before it.
-            </p>
-            <input
-                id="name-input"
-                type="text"
-                placeholder="e.g. Harry Potter"
-                maxlength="40"
-                style="
-                    width:100%; box-sizing:border-box;
-                    background:rgba(255,255,255,0.07);
-                    border:1px solid rgba(218,205,170,0.3);
-                    border-radius:8px; padding:12px 16px;
-                    color:#f0e8d0; font-size:16px; outline:none;
-                    margin-bottom:20px; font-family:inherit;
-                "
-            />
-            <button id="name-confirm-btn" style="
-                background:linear-gradient(135deg,#7b3fa0,#4a2575);
-                color:#f0e8d0; border:none; border-radius:8px;
-                padding:12px 32px; font-size:15px; cursor:pointer;
-                width:100%; letter-spacing:1px; font-family:inherit;
-                transition:opacity 0.2s;
-            ">Begin the Ceremony</button>
-        </div>
-    `;
-
-    document.body.appendChild(prompt);
-
-    const input   = document.getElementById('name-input');
-    const confirm = document.getElementById('name-confirm-btn');
-    input.focus();
+// ================= NAME MODAL =================
+function showNameModal(onConfirm) {
+    nameModal.classList.remove('hidden');
+    nameInput.value = '';
+    nameInput.focus();
 
     function submit() {
-        const name = input.value.trim();
+        const name = nameInput.value.trim();
         if (!name) {
-            input.style.borderColor = '#c0392b';
-            input.placeholder = 'Please enter your name!';
+            // Shake the input
+            nameInput.classList.remove('shake');
+            void nameInput.offsetWidth; // force reflow
+            nameInput.classList.add('shake');
+            nameInput.style.borderBottomColor = 'rgba(200,60,60,0.7)';
+            setTimeout(() => nameInput.style.borderBottomColor = '', 600);
             return;
         }
         studentName = name;
-        prompt.remove();
+        nameModal.classList.add('hidden');
         onConfirm();
     }
 
-    confirm.addEventListener('click', submit);
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+    // Clean up old listeners by replacing buttons
+    const newConfirmBtn = nameConfirmBtn.cloneNode(true);
+    nameConfirmBtn.parentNode.replaceChild(newConfirmBtn, nameConfirmBtn);
+
+    newConfirmBtn.addEventListener('click', submit);
+    nameInput.addEventListener('keydown', function handler(e) {
+        if (e.key === 'Enter') {
+            submit();
+            nameInput.removeEventListener('keydown', handler);
+        }
+    });
 }
 
-
-// ================= FUNCTIONS =================
+// ================= QUIZ FUNCTIONS =================
 function initQuiz() {
     renderPips();
     showQuestion();
@@ -249,7 +221,9 @@ function showQuestion() {
     renderPips();
 
     const question = questions[currentQuestionIndex];
+
     questionText.style.opacity = '0';
+    questionText.style.transform = 'translateY(10px)';
     optionsDiv.style.opacity = '0';
 
     setTimeout(() => {
@@ -257,185 +231,186 @@ function showQuestion() {
         if (questionImg) questionImg.src = question.image;
 
         optionsDiv.innerHTML = '';
-        question.options.forEach(option => {
+        question.options.forEach((option, i) => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
             btn.textContent = option.text;
-            btn.addEventListener('click', () => selectOption(option.house));
+            btn.style.opacity = '0';
+            btn.style.transform = 'translateX(-12px)';
+            btn.addEventListener('click', () => selectOption(btn, option.house));
             optionsDiv.appendChild(btn);
+
+            // Stagger each option in
+            setTimeout(() => {
+                btn.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                btn.style.opacity = '1';
+                btn.style.transform = 'translateX(0)';
+            }, i * 60 + 80);
         });
 
-        questionText.style.transition = 'opacity 0.35s';
-        optionsDiv.style.transition = 'opacity 0.35s';
+        questionText.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+        optionsDiv.style.transition = 'opacity 0.35s ease';
         questionText.style.opacity = '1';
+        questionText.style.transform = 'translateY(0)';
         optionsDiv.style.opacity = '1';
-    }, 180);
+    }, 220);
 }
 
-function selectOption(house) {
+function selectOption(btn, house) {
+    // Disable all buttons immediately
+    document.querySelectorAll('.option-btn').forEach(b => {
+        b.style.pointerEvents = 'none';
+        b.style.opacity = '0.4';
+    });
+    btn.classList.add('selected');
+    btn.style.opacity = '1';
+
     scores[house]++;
     currentQuestionIndex++;
 
-    if (currentQuestionIndex < questions.length) {
-        showQuestion();
-    } else {
-        showResult();
-    }
+    setTimeout(() => {
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showThinking();
+        }
+    }, 380);
 }
 
-// ================= SAVE TO BACKEND =================
-async function saveToBackend(name, house, scores) {
-    try {
-        const response = await fetch(`${API_BASE}/sort`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, house, scores })
+// ================= THINKING STATE =================
+function showThinking() {
+    questionContainer.classList.add('hidden');
+    thinkingContainer.classList.remove('hidden');
+
+    // Random thinking messages for fun
+    const messages = [
+        'The Hat is deliberating...',
+        'Hmm... a difficult one...',
+        'The Hat sees much in you...',
+        'Your mind is complex indeed...',
+        'Almost... yes, almost decided...'
+    ];
+    const msgEl = thinkingContainer.querySelector('.thinking-text');
+    let idx = 0;
+    const interval = setInterval(() => {
+        idx = (idx + 1) % messages.length;
+        msgEl.style.opacity = '0';
+        setTimeout(() => {
+            msgEl.textContent = messages[idx];
+            msgEl.style.transition = 'opacity 0.4s';
+            msgEl.style.opacity = '1';
+        }, 200);
+    }, 900);
+
+    // After 2.8s, show result
+    setTimeout(() => {
+        clearInterval(interval);
+        thinkingContainer.classList.add('hidden');
+        showResult();
+    }, 2800);
+}
+
+// ================= PARTICLE SYSTEM =================
+function launchParticles(house) {
+    const colors = houseColors[house];
+    const ctx = particleCanvas.getContext('2d');
+
+    particleCanvas.width  = window.innerWidth;
+    particleCanvas.height = window.innerHeight;
+    particleCanvas.classList.add('active');
+
+    const particles = [];
+    const GOLD = '#d4a017';
+    const GOLD2 = '#f0c040';
+
+    // Spawn burst of particles from center-top
+    for (let i = 0; i < 120; i++) {
+        const isGold = Math.random() < 0.5;
+        const angle  = (Math.random() * Math.PI * 2);
+        const speed  = Math.random() * 7 + 2;
+        particles.push({
+            x: particleCanvas.width / 2,
+            y: particleCanvas.height * 0.35,
+            vx: Math.cos(angle) * speed * (0.6 + Math.random() * 0.8),
+            vy: Math.sin(angle) * speed - Math.random() * 4,
+            r: Math.random() * 5 + 2,
+            color: isGold
+                ? (Math.random() < 0.5 ? GOLD : GOLD2)
+                : (Math.random() < 0.5 ? colors.primary : colors.secondary),
+            alpha: 1,
+            decay: Math.random() * 0.018 + 0.012,
+            gravity: 0.18 + Math.random() * 0.12,
+            shape: Math.random() < 0.3 ? 'star' : 'circle'
+        });
+    }
+
+    function drawStar(ctx, x, y, r) {
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+            const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+            const innerAngle = angle + (2 * Math.PI) / 10;
+            if (i === 0) ctx.moveTo(x + r * Math.cos(angle), y + r * Math.sin(angle));
+            else ctx.lineTo(x + r * Math.cos(angle), y + r * Math.sin(angle));
+            ctx.lineTo(x + (r * 0.4) * Math.cos(innerAngle), y + (r * 0.4) * Math.sin(innerAngle));
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+        let alive = false;
+        particles.forEach(p => {
+            if (p.alpha <= 0) return;
+            alive = true;
+
+            p.x  += p.vx;
+            p.y  += p.vy;
+            p.vy += p.gravity;
+            p.vx *= 0.99;
+            p.alpha -= p.decay;
+
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.fillStyle = p.color;
+
+            if (p.shape === 'star') {
+                drawStar(ctx, p.x, p.y, p.r);
+            } else {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fill();
+            }
         });
 
-        const data = await response.json();
+        ctx.globalAlpha = 1;
 
-        if (!response.ok) {
-            console.warn('Backend warning:', data.message);
-            return null;
+        if (alive) {
+            particleAnimId = requestAnimationFrame(animate);
+        } else {
+            particleCanvas.classList.remove('active');
         }
-
-        if (window.location.hostname === 'localhost') {
-            console.log('Saved to Neo4j:', data);
-        }
-
-        return data;
-
-    } catch (err) {
-        console.warn('Could not reach backend:', err.message);
-        alert("⚠️ Could not save your result.");
-        return null;
     }
+
+    if (particleAnimId) cancelAnimationFrame(particleAnimId);
+    animate();
 }
 
-// ================= LOAD LEADERBOARD =================
-async function loadLeaderboard() {
-    try {
-        const [resultsRes, statsRes] = await Promise.all([
-            fetch(`${API_BASE}/results`),
-            fetch(`${API_BASE}/stats`)
-        ]);
-
-        const resultsData = await resultsRes.json();
-        const statsData   = await statsRes.json();
-
-        renderLeaderboard(resultsData.students, statsData.stats);
-
-    } catch (err) {
-        console.warn('Could not load leaderboard:', err.message);
-    }
+// ================= HOUSE FLOOD =================
+function triggerHouseFlood(house) {
+    const colors = houseColors[house];
+    houseFlood.style.background =
+        `radial-gradient(ellipse at 50% 40%, ${colors.primary}22 0%, ${colors.dark}11 50%, transparent 80%)`;
+    houseFlood.classList.add('show');
 }
 
-function renderLeaderboard(students, stats) {
-    // Remove old leaderboard if it exists
-    const existing = document.getElementById('leaderboard-section');
-    if (existing) existing.remove();
-
-    if (!students || students.length === 0) return;
-
-    const houseColors = {
-        Gryffindor: '#ae0001',
-        Slytherin:  '#1a472a',
-        Ravenclaw:  '#0e1a40',
-        Hufflepuff: '#ecb939'
-    };
-
-    const houseEmoji = {
-        Gryffindor: '🦁',
-        Slytherin:  '🐍',
-        Ravenclaw:  '🦅',
-        Hufflepuff: '🦡'
-    };
-
-    // Build stats bars
-    const totalStudents = stats.reduce((sum, s) => sum + s.total, 0);
-    const statsBars = stats.map(s => {
-        const pct = totalStudents > 0 ? Math.round((s.total / totalStudents) * 100) : 0;
-        const color = houseColors[s.house] || '#555';
-        return `
-            <div style="margin-bottom:10px;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-                    <span style="color:#daccaa;font-size:13px;">${houseEmoji[s.house] || ''} ${s.house}</span>
-                    <span style="color:rgba(218,205,170,0.6);font-size:13px;">${s.total} student${s.total !== 1 ? 's' : ''}</span>
-                </div>
-                <div style="background:rgba(255,255,255,0.08);border-radius:4px;height:8px;overflow:hidden;">
-                    <div style="background:${color};width:${pct}%;height:100%;border-radius:4px;transition:width 0.8s ease;"></div>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    // Build recent students list (latest 10)
-    const recentRows = students.slice(0, 10).map(s => {
-        const date = new Date(s.sortedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short' });
-        const color = houseColors[s.house] || '#555';
-        return `
-            <div style="
-                display:flex; align-items:center; justify-content:space-between;
-                padding:10px 0; border-bottom:1px solid rgba(218,205,170,0.08);
-            ">
-                <span style="color:#f0e8d0;font-size:14px;">${escapeHtml(s.name)}</span>
-                <span style="
-                    background:${color}33; color:${color === '#ecb939' ? '#a07800' : '#daccaa'};
-                    border:1px solid ${color}66;
-                    padding:3px 10px; border-radius:20px; font-size:12px;
-                ">${houseEmoji[s.house] || ''} ${s.house}</span>
-                <span style="color:rgba(218,205,170,0.4);font-size:12px;">${date}</span>
-            </div>
-        `;
-    }).join('');
-
-    const section = document.createElement('section');
-    section.id = 'leaderboard-section';
-    section.style.cssText = `
-        padding:80px 20px; max-width:700px; margin:0 auto;
-        text-align:center;
-    `;
-    section.innerHTML = `
-        <h2 style="color:#f0e8d0;font-size:28px;margin-bottom:8px;">The Great Hall Board</h2>
-        <p style="color:rgba(218,205,170,0.6);margin-bottom:48px;">Those who have been sorted before you</p>
-
-        <div style="
-            background:rgba(255,255,255,0.04); border:1px solid rgba(218,205,170,0.15);
-            border-radius:16px; padding:28px; margin-bottom:24px; text-align:left;
-        ">
-            <p style="color:rgba(218,205,170,0.5);font-size:11px;letter-spacing:2px;margin-bottom:20px;">HOUSE STANDINGS</p>
-            ${statsBars}
-        </div>
-
-        <div style="
-            background:rgba(255,255,255,0.04); border:1px solid rgba(218,205,170,0.15);
-            border-radius:16px; padding:28px; text-align:left;
-        ">
-            <p style="color:rgba(218,205,170,0.5);font-size:11px;letter-spacing:2px;margin-bottom:16px;">RECENTLY SORTED</p>
-            ${recentRows}
-        </div>
-    `;
-
-    // Insert before footer
-    const footer = document.querySelector('.site-footer');
-    if (footer) {
-        document.body.insertBefore(section, footer);
-    } else {
-        document.body.appendChild(section);
-    }
+function clearHouseFlood() {
+    houseFlood.classList.remove('show');
+    houseFlood.style.background = '';
 }
-
-function escapeHtml(str) {
-    const d = document.createElement('div');
-    d.appendChild(document.createTextNode(str));
-    return d.innerHTML;
-}
-
 
 // ================= SHOW RESULT =================
 function showResult() {
-    questionContainer.classList.add('hidden');
-
     // Determine winner
     let maxScore = 0;
     let winner = 'gryffindor';
@@ -446,31 +421,49 @@ function showResult() {
         }
     }
 
+    // Set body class for CSS house-specific styling
+    body.classList.add(`${winner}-bg`);
+
+    // Flood the background with house color
+    triggerHouseFlood(winner);
+
     // Populate result
+    const nameEl = document.getElementById('result-student-name');
+    if (nameEl) nameEl.textContent = studentName || 'Young Wizard';
     houseReveal.textContent = houseData[winner].name;
     houseImg.src = houseImages[winner];
 
     const descEl = document.getElementById('house-description');
     if (descEl) descEl.textContent = houseData[winner].description;
 
-    // Reveal with animation
+    // Show result card
     resultContainer.classList.remove('hidden');
-    setTimeout(() => resultContainer.classList.add('show'), 20);
 
-    // Background tint
-    body.classList.add(`${winner}-bg`);
+    // Launch particles after a short delay (let crest animate in first)
+    setTimeout(() => launchParticles(winner), 600);
 
-    // ✨ NEW: Save to Neo4j backend
-    (async () => {
-    const result = await saveToBackend(studentName || 'Anonymous', winner, scores);
-    if (result) {
-        loadLeaderboard();
-    }
-})();
+    // Save to backend
+    saveToBackend(studentName || 'Anonymous', winner, scores);
 }
 
+// ================= SAVE TO BACKEND =================
+async function saveToBackend(name, house, scores) {
+    try {
+        const response = await fetch(`${API_BASE}/sort`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, house, scores })
+        });
+        if (!response.ok) return;
+        const data = await response.json();
+        console.log('✅ Saved to Neo4j:', data);
+    } catch (err) {
+        // Silently fail — quiz experience is unaffected
+        console.warn('Backend unreachable:', err.message);
+    }
+}
 
-// ================= EVENTS =================
+// ================= RETAKE =================
 if (retakeBtn) {
     retakeBtn.addEventListener('click', () => {
         currentQuestionIndex = 0;
@@ -478,36 +471,42 @@ if (retakeBtn) {
         studentName = '';
 
         body.classList.remove('gryffindor-bg', 'slytherin-bg', 'ravenclaw-bg', 'hufflepuff-bg');
+        clearHouseFlood();
 
-        resultContainer.classList.remove('show');
+        // Stop particles
+        if (particleAnimId) {
+            cancelAnimationFrame(particleAnimId);
+            particleCanvas.classList.remove('active');
+        }
+
         resultContainer.classList.add('hidden');
+        thinkingContainer.classList.add('hidden');
 
-        questionContainer.classList.remove('hidden');
-
-        // Ask for name again on retake
-        askForName(() => initQuiz());
-    });
-}
-
-if (startBtn) {
-    startBtn.addEventListener('click', () => {
-        startContainer.classList.add('hidden');
-        // Ask for name before starting the quiz
-        askForName(() => {
+        // Show name modal again for a fresh entry
+        showNameModal(() => {
             questionContainer.classList.remove('hidden');
             initQuiz();
         });
     });
 }
 
+// ================= START BUTTON =================
+if (startBtn) {
+    startBtn.addEventListener('click', () => {
+        startContainer.classList.add('hidden');
+        showNameModal(() => {
+            questionContainer.classList.remove('hidden');
+            initQuiz();
+        });
+    });
+}
+
+// Hero section button — smooth scroll only
 if (heroStartBtn) {
     heroStartBtn.addEventListener('click', () => {
         document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
     });
 }
 
-// Load leaderboard on page load
-window.addEventListener('load', () => {
-    initStarfield();
-    loadLeaderboard();
-});
+// ================= INIT =================
+window.addEventListener('load', initStarfield);
