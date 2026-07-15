@@ -1,14 +1,11 @@
 # 🧙 Hogwarts Sorting Hat (Full-Stack Project)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen.svg?style=for-the-badge&logo=netlify)](https://harrypotter-house-sorting.netlify.app/)
 
 A full-stack web application that assigns users to Hogwarts houses based on personality-driven quiz responses, powered by a **Neo4j graph database** and a **Node.js backend**.
 
 ---
 
-## 🚀 Live Demo
 
-
-Frontend: https://harrypotter-house-sorting.netlify.app/
-Backend API: [https://your-backend.onrender.com](https://hogwarts-house-sorting-backend.onrender.com/api)
 
 ---
 
