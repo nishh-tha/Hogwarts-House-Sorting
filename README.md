@@ -44,6 +44,14 @@ Open `index.html` directly in your browser — no build step or server needed.
 
 ---
 
+## 🛣️ Roadmap
+
+* Possible migration to React for better component structure and state management
+* Additional scenario-based questions
+* Sound effects on the sorting reveal
+
+---
+
 ## 👩‍💻 Author
 
 Nishtha Jaiswal
