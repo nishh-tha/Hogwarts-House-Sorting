@@ -20,7 +20,6 @@ Rather than asking directly "which trait describes you," each question presents 
 
 * HTML, CSS, vanilla JavaScript
 * Canvas-based particle and starfield effects
-* html2canvas for shareable result cards
 
 ---
 
@@ -28,7 +27,6 @@ Rather than asking directly "which trait describes you," each question presents 
 
 * 🎯 Scenario-based questions with weighted, multi-house scoring
 * ✨ Animated sorting sequence with house-colored particle effects
-* 🖼️ Downloadable result card to share your house
 * 🎨 Fully client-side — no backend or database required
 
 ---

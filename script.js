@@ -44,7 +44,7 @@ const questions = [
         text: "You realize someone quietly took credit for your idea in a group project. Your real, immediate reaction:",
         image: "images/betrayal.jpeg",
         options: [
-            { text: "Anger — you want to say something right now.", points: { gryffindor: 2 } },
+            { text: "Anger, you want to say something right now.", points: { gryffindor: 2 } },
             { text: "You start paying much closer attention to what they do next.", points: { slytherin: 2, ravenclaw: 1 } },
             { text: "Disappointment more than anger, you expected better of them.", points: { hufflepuff: 2 } },
             { text: "You start thinking through how to avoid this happening again.", points: { ravenclaw: 2, slytherin: 1 } }
@@ -122,44 +122,6 @@ let scores = { gryffindor: 0, slytherin: 0, ravenclaw: 0, hufflepuff: 0 };
 let studentName = '';
 let particleAnimId = null;
 
-const downloadBtn = document.getElementById('download-btn');
-
-if (downloadBtn) {
-    downloadBtn.addEventListener('click', async () => {
-
-        const shareCard = document.getElementById('share-card');
-
-        // Determine current winner from the scores object
-        let maxScore = 0, winner = 'gryffindor';
-        for (const house in scores) {
-            if (scores[house] > maxScore) { maxScore = scores[house]; winner = house; }
-        }
-
-        // Fill data
-        document.getElementById('share-name').textContent = studentName || "Young Wizard";
-        document.getElementById('share-house').textContent = houseReveal.textContent;
-        document.getElementById('share-img').src = houseImg.src;
-        document.getElementById('share-quote').textContent = houseData[winner].description;
-        document.getElementById('share-date').textContent = new Date().toLocaleDateString('en-US', {
-            month: 'short', day: 'numeric', year: 'numeric'
-        });
-
-        // Apply house theme + show temporarily
-        shareCard.classList.remove('gryffindor', 'slytherin', 'ravenclaw', 'hufflepuff');
-        shareCard.classList.add(winner);
-        shareCard.classList.remove('hidden');
-
-        const canvas = await html2canvas(shareCard);
-
-        const link = document.createElement('a');
-        link.download = 'hogwarts-result.png';
-        link.href = canvas.toDataURL();
-        link.click();
-
-        // Hide again
-        shareCard.classList.add('hidden');
-    });
-}
 // ================= STARFIELD =================
 function initStarfield() {
     const canvas = document.createElement('canvas');
