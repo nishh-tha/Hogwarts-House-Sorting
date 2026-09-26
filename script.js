@@ -129,12 +129,24 @@ if (downloadBtn) {
 
         const shareCard = document.getElementById('share-card');
 
+        // Determine current winner from the scores object
+        let maxScore = 0, winner = 'gryffindor';
+        for (const house in scores) {
+            if (scores[house] > maxScore) { maxScore = scores[house]; winner = house; }
+        }
+
         // Fill data
         document.getElementById('share-name').textContent = studentName || "Young Wizard";
         document.getElementById('share-house').textContent = houseReveal.textContent;
         document.getElementById('share-img').src = houseImg.src;
+        document.getElementById('share-quote').textContent = houseData[winner].description;
+        document.getElementById('share-date').textContent = new Date().toLocaleDateString('en-US', {
+            month: 'short', day: 'numeric', year: 'numeric'
+        });
 
-        // Show temporarily
+        // Apply house theme + show temporarily
+        shareCard.classList.remove('gryffindor', 'slytherin', 'ravenclaw', 'hufflepuff');
+        shareCard.classList.add(winner);
         shareCard.classList.remove('hidden');
 
         const canvas = await html2canvas(shareCard);
