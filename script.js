@@ -1,66 +1,65 @@
-// ================= CONFIG =================
-const API_BASE = 'http://localhost:3000/api';
+
 
 // ================= QUIZ DATA =================
 const questions = [
     {
-        text: "You stumble upon hidden treasure deep in the Forbidden Forest. What do you do?",
+        text: "You're hiking alone and the trail markers stop — fog swallows the path ahead. Your first move?",
         image: "images/forest.jpeg",
         options: [
-            { text: "Charge in boldly — glory awaits!", house: "gryffindor" },
-            { text: "Devise a cunning plan to claim it to your advantage.", house: "slytherin" },
-            { text: "Study it carefully to understand its origins first.", house: "ravenclaw" },
-            { text: "Share the discovery with your closest friends.", house: "hufflepuff" }
+            { text: "Keep walking forward, trusting you'll find your way.", points: { gryffindor: 2, ravenclaw: 1 } },
+            { text: "Backtrack and look for a landmark you recognize.", points: { hufflepuff: 2, ravenclaw: 1 } },
+            { text: "Climb something to get a vantage point and plan a route.", points: { ravenclaw: 2, slytherin: 1 } },
+            { text: "Mark your trail as you go, so retreat is always possible.", points: { slytherin: 2, hufflepuff: 1 } }
         ]
     },
     {
-        text: "When faced with a seemingly impossible challenge, your first instinct is to...",
+        text: "Your team is down by a wide margin at halftime. As the de facto strategist, you:",
         image: "images/challenge.jpeg",
         options: [
-            { text: "Face it head-on, consequences be damned.", house: "gryffindor" },
-            { text: "Find the cleverest angle to outmaneuver it.", house: "slytherin" },
-            { text: "Analyze it logically from every possible angle.", house: "ravenclaw" },
-            { text: "Rally your allies — together you will prevail.", house: "hufflepuff" }
+            { text: "Call for an all-out aggressive push — damn the risk.", points: { gryffindor: 2 } },
+            { text: "Quietly spot the flaw in the other team's pattern and exploit it.", points: { slytherin: 2, ravenclaw: 1 } },
+            { text: "Regroup the team, refocus morale, remind them why they started.", points: { hufflepuff: 2, gryffindor: 1 } },
+            { text: "Recalculate the numbers to find the actual fastest path to winning.", points: { ravenclaw: 2, slytherin: 1 } }
         ]
     },
     {
-        text: "A perfect free afternoon at Hogwarts would be spent...",
+        text: "A free evening opens up with nothing planned. You find yourself:",
         image: "images/free-time.jpeg",
         options: [
-            { text: "Exploring somewhere forbidden and dangerous.", house: "gryffindor" },
-            { text: "Scheming your next great ambition.", house: "slytherin" },
-            { text: "Lost in the library among ancient tomes.", house: "ravenclaw" },
-            { text: "Helping a struggling classmate with their studies.", house: "hufflepuff" }
+            { text: "Out the door, restless, looking for something to happen.", points: { gryffindor: 2 } },
+            { text: "Curled up somewhere quiet, lost in a book or your own thoughts.", points: { ravenclaw: 2, hufflepuff: 1 } },
+            { text: "Messaging people, checking in, making plans for tomorrow.", points: { hufflepuff: 2 } },
+            { text: "Working on something ambitious no one else knows about yet.", points: { slytherin: 2, ravenclaw: 1 } }
         ]
     },
     {
-        text: "If you could master one extraordinary magical ability, it would be...",
+        text: "If a rare magical gift chose you tonight, what quietly makes you uneasy about it?",
         image: "images/ability.jpeg",
         options: [
-            { text: "Invisibility — to go where none dare follow.", house: "gryffindor" },
-            { text: "Legilimency — to read and influence minds.", house: "slytherin" },
-            { text: "Chronokinesis — to manipulate time itself.", house: "ravenclaw" },
-            { text: "Healing magic — to mend what has been broken.", house: "hufflepuff" }
+            { text: "That you might use it recklessly before understanding it.", points: { gryffindor: 2 } },
+            { text: "That you might come to rely on it instead of your own skill.", points: { ravenclaw: 2, hufflepuff: 1 } },
+            { text: "That others might try to take it, or take advantage of you for it.", points: { slytherin: 2 } },
+            { text: "That it might set you apart from people you care about.", points: { hufflepuff: 2, gryffindor: 1 } }
         ]
     },
     {
-        text: "When someone betrays your trust, you...",
+        text: "You realize someone quietly took credit for your idea in a group project. Your real, immediate reaction:",
         image: "images/betrayal.jpeg",
         options: [
-            { text: "Confront them directly — you deserve answers.", house: "gryffindor" },
-            { text: "Bide your time and repay it on your own terms.", house: "slytherin" },
-            { text: "Reflect carefully on what went wrong and why.", house: "ravenclaw" },
-            { text: "Find it in your heart to forgive and move forward.", house: "hufflepuff" }
+            { text: "Anger — you want to say something right now.", points: { gryffindor: 2 } },
+            { text: "You start paying much closer attention to what they do next.", points: { slytherin: 2, ravenclaw: 1 } },
+            { text: "Disappointment more than anger — you expected better of them.", points: { hufflepuff: 2 } },
+            { text: "You start thinking through how to avoid this happening again.", points: { ravenclaw: 2, slytherin: 1 } }
         ]
     },
     {
-        text: "What drives you forward when the road grows dark?",
+        text: "Picture yourself walking toward something uncertain, like this scene, at the end of a long day. What's actually pulling you forward?",
         image: "images/motivation.jpeg",
         options: [
-            { text: "The thrill of adventure and the promise of glory.", house: "gryffindor" },
-            { text: "Power, influence, and the taste of hard-won success.", house: "slytherin" },
-            { text: "The pursuit of truth and ever-deeper understanding.", house: "ravenclaw" },
-            { text: "The bonds of loyalty that never, ever break.", house: "hufflepuff" }
+            { text: "Not knowing what's next — that's exactly why you're going.", points: { gryffindor: 2 } },
+            { text: "The people beside you — you wouldn't be walking alone.", points: { hufflepuff: 2 } },
+            { text: "A specific goal in your head you haven't told anyone.", points: { slytherin: 2 } },
+            { text: "Curiosity about what's actually over that hill.", points: { ravenclaw: 2 } }
         ]
     }
 ];
@@ -263,7 +262,7 @@ function showQuestion() {
             btn.textContent = option.text;
             btn.style.opacity = '0';
             btn.style.transform = 'translateX(-12px)';
-            btn.addEventListener('click', () => selectOption(btn, option.house));
+            btn.addEventListener('click', () => selectOption(btn, option.points));
             optionsDiv.appendChild(btn);
 
             // Stagger each option in
@@ -282,7 +281,7 @@ function showQuestion() {
     }, 220);
 }
 
-function selectOption(btn, house) {
+function selectOption(btn, points) {
     // Disable all buttons immediately
     document.querySelectorAll('.option-btn').forEach(b => {
         b.style.pointerEvents = 'none';
@@ -291,7 +290,9 @@ function selectOption(btn, house) {
     btn.classList.add('selected');
     btn.style.opacity = '1';
 
-    scores[house]++;
+    for (const house in points) {
+        scores[house] += points[house];
+    }
     currentQuestionIndex++;
 
     setTimeout(() => {
@@ -468,26 +469,8 @@ function showResult() {
     // Launch particles after a short delay (let crest animate in first)
     setTimeout(() => launchParticles(winner), 600);
 
-    // Save to backend
-    saveToBackend(studentName || 'Anonymous', winner, scores);
 }
 
-// ================= SAVE TO BACKEND =================
-async function saveToBackend(name, house, scores) {
-    try {
-        const response = await fetch(`${API_BASE}/sort`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, house, scores })
-        });
-        if (!response.ok) return;
-        const data = await response.json();
-        console.log('✅ Saved to Neo4j:', data);
-    } catch (err) {
-        // Silently fail — quiz experience is unaffected
-        console.warn('Backend unreachable:', err.message);
-    }
-}
 
 // ================= RETAKE =================
 if (retakeBtn) {
