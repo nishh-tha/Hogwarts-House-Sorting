@@ -14,7 +14,7 @@ const questions = [
         text: "Your team is down by a wide margin at halftime. As the de facto strategist, you:",
         image: "images/challenge.jpeg",
         options: [
-            { text: "Call for an all-out aggressive push — damn the risk.", points: { gryffindor: 2 } },
+            { text: "Call for an all-out aggressive push, damn the risk.", points: { gryffindor: 2 } },
             { text: "Quietly spot the flaw in the other team's pattern and exploit it.", points: { slytherin: 2, ravenclaw: 1 } },
             { text: "Regroup the team, refocus morale, remind them why they started.", points: { hufflepuff: 2, gryffindor: 1 } },
             { text: "Recalculate the numbers to find the actual fastest path to winning.", points: { ravenclaw: 2, slytherin: 1 } }
@@ -46,7 +46,7 @@ const questions = [
         options: [
             { text: "Anger — you want to say something right now.", points: { gryffindor: 2 } },
             { text: "You start paying much closer attention to what they do next.", points: { slytherin: 2, ravenclaw: 1 } },
-            { text: "Disappointment more than anger — you expected better of them.", points: { hufflepuff: 2 } },
+            { text: "Disappointment more than anger, you expected better of them.", points: { hufflepuff: 2 } },
             { text: "You start thinking through how to avoid this happening again.", points: { ravenclaw: 2, slytherin: 1 } }
         ]
     },
@@ -54,8 +54,8 @@ const questions = [
         text: "Picture yourself walking toward something uncertain, like this scene, at the end of a long day. What's actually pulling you forward?",
         image: "images/motivation.jpeg",
         options: [
-            { text: "Not knowing what's next — that's exactly why you're going.", points: { gryffindor: 2 } },
-            { text: "The people beside you — you wouldn't be walking alone.", points: { hufflepuff: 2 } },
+            { text: "Not knowing what's next, that's exactly why you're going.", points: { gryffindor: 2 } },
+            { text: "The people beside you, you wouldn't be walking alone.", points: { hufflepuff: 2 } },
             { text: "A specific goal in your head you haven't told anyone.", points: { slytherin: 2 } },
             { text: "Curiosity about what's actually over that hill.", points: { ravenclaw: 2 } }
         ]
